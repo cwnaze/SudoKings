@@ -1,0 +1,36 @@
+# CLion build directories
+cmake-build-*/
+build/
+out/
+
+# CLion / JetBrains project settings
+.idea/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+_deps/
+Makefile
+
+# Compiled output
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# Editor / OS junk
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
