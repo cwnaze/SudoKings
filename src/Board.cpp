@@ -86,7 +86,7 @@ namespace sudoku {
         if (!inBounds(row, col) || value < 1 || value > boardSize) return false;
         if (cells[indexOf(row, col)] != 0) return false;
 
-        for (size_t i = 0; i < boardSize; ++i) {
+        for (int i = 0; i < boardSize; ++i) {
             if (cells[indexOf(row, i)] == value) return false;
             if (cells[indexOf(i, row)] == value) return false;
         }
@@ -140,5 +140,64 @@ namespace sudoku {
 
     bool Board::isSolved() const {
         return isComplete() && isValid();
+    }
+
+    //find next empty and candidate digits queries
+    std::optional<Position> Board::findFirstEmpty() const {
+        for (int i = 0; i < cellCount; ++i) {
+            if (cells[i] == 0) return Position{i / boardSize, i % boardSize};
+        }
+
+        return std::nullopt;
+    }
+
+    std::vector<int> Board::candidates(int row, int col) const {
+        std::vector<int> result;
+        for (int i = 1; i <= boardSize; ++i) {
+            if (canPlace(row, col, i)) result.push_back(i);
+        }
+
+        return result;
+    }
+
+    int Board::emptyCount() const {
+        int count = 0;
+        for (int i : cells) {
+            if (i == 0) ++count;
+        }
+
+        return count;
+    }
+
+    //print and to string for menu
+    std::string Board::toString() const {
+        std::ostringstream out;
+        for (int r = 0; r < boardSize; ++r) {
+            if (r != 0 && r % boxSize == 0) {
+                out << "------+-------+------\n";
+            }
+            for (int c = 0; c < boardSize; ++c) {
+                if (c != 0 && c % boxSize == 0) {
+                    out << "| ";
+                }
+                int value = cells[indexOf(r,c)];
+                out << (value == 0 ? '.' : static_cast<char>('0' + value));
+                if (c != boardSize - 1) {
+                    out << ' ' ;
+                }
+            }
+
+            out << '\n';
+        }
+
+        return out.str();
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Board& board) {
+        return os << board.toString();
+    }
+
+    bool Board::operator==(const Board& board) const {
+        return cells == board.cells;
     }
 }
