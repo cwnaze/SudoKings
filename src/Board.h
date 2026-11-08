@@ -6,9 +6,7 @@
 // Boxes are numbered 0-8 (left to right, top to bottom) and box = (row/3)*3 + (col/3)
 //
 
-#ifndef SUDOKINGS_BOARD_H
-#define SUDOKINGS_BOARD_H
-
+#pragma once
 #include <string>
 #include <array>
 #include <ostream>
@@ -56,5 +54,3 @@ namespace sudoku {
 
     };
 }
-
-#endif //SUDOKINGS_BOARD_H

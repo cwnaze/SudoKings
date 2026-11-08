@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 const int STEP_LIMIT = 1000000; // Maximum number of steps allowed for solving the puzzle, will be changed if need be. 
 
