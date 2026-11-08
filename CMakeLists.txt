@@ -12,7 +12,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(tests tests/test.cpp)
+add_executable(tests tests/test.cpp
+        src/Board.h)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
@@ -20,4 +21,5 @@ include(Catch)
 catch_discover_tests(tests)
 
 include_directories(src)
-add_executable(SudoKings src/main.cpp)
+add_executable(SudoKings src/main.cpp
+        src/Board.h)
