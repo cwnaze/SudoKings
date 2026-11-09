@@ -14,6 +14,7 @@
 
 using sudoku::Board;
 using sudoku::SolverA;
+using sudoku::SolveResult;
 
 namespace {
 
