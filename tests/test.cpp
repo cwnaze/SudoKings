@@ -6,4 +6,4 @@
 
 TEST_CASE("Initial Test", "[smoke]") {
     REQUIRE(true);
-};
+}
