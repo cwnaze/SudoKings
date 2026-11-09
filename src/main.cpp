@@ -3,6 +3,8 @@
 #include <string>
 #include "Board.h"
 #include "Dataset.h"
+#include "SolverA.h"
+#include "SolverB.h"
 
 using namespace std;
 using namespace sudoku;
@@ -64,7 +66,7 @@ void menuPr() {
     cout << "Choose 1-6: ";
 }
 
-// reads a number, returns -1 if the user typed something that is not a number
+// reads a number returns -1 if the user typed something that is not a number
 int numRead() {
     int number;
     cin >> number;
@@ -85,11 +87,75 @@ void puzPrint(string puzzle) {
     cout << board;
 }
 
+// solves the current puzzle with solver A or B and shows the solve screen
+void currentSolve(char which, string puzzle, string answer, SolverA& solverA, SolverB& solverB) {
+    if (puzzle == "") {
+        cout << "Load or type in a puzzle first (option 1 or 2)." << endl;
+        return;
+    }
+
+    Board board(puzzle);
+    SolveResult result;
+    string name;
+    if (which == 'A') {
+        name = solverA.name();
+        result = solverA.solve(board);
+    } 
+    else {
+        name = solverB.name();
+        result = solverB.solve(board);
+    }
+
+    string status = "SOLVED";
+    if (!result.solved) {
+        if (result.hitStepLimit) {
+            status = "STEP LIMIT HIT";
+        } else {
+            status = "NOT SOLVED";
+        }
+    } 
+    else if (answer != "" && result.grid != answer) {
+        status = "WRONG ANSWER";
+    }
+
+    cout << endl;
+    borderPr();
+    titlePr("SUDOKU SOLVER SHOWDOWN - SOLVE SCREEN");
+    borderPr();
+    puzPrint(puzzle);
+    cout << endl;
+    cout << " Solver:      " << name << endl;
+    cout << " Clues:       " << Dataset::clueCounts(puzzle) << endl;
+    cout << " Time:        " << result.micros / 1000.0 << " ms" << endl;
+    cout << " Steps:       " << result.steps << endl;
+    cout << " Guesses:     " << result.guesses << endl;
+    cout << " Backtracks:  " << result.backtracks << endl;
+    cout << " Status:      " << status << endl;
+
+    bool onScreen = true;
+    while (onScreen) {
+        cout << endl << " [S] show solved grid   [M] back to menu: ";
+        char key;
+        cin >> key;
+        if (cin.fail()) {
+            onScreen = false;
+        } else if (key == 's' || key == 'S') {
+            if (result.solved) {
+                cout << endl << board;
+            } else {
+                cout << " There is no solved grid to show." << endl;
+            }
+        } else if (key == 'm' || key == 'M') {
+            onScreen = false;
+        }
+    }
+}
+
 int main() {
     Dataset data;
     bool loaded = data.load("sudoku.csv", LOAD_COUNT);
     if (!loaded) {
-        loaded = data.load("../sudoku.csv", LOAD_COUNT);
+        loaded = data.load("../sudoku.csv", LOAD_COUNT); // for clion.
         }
     if (!loaded) {
         cout << "Could not find sudoku.csv. ";
@@ -106,6 +172,8 @@ int main() {
         cout << "Loaded " << data.size() << " puzzles." << endl;
         }
 
+    SolverA solverA;
+    SolverB solverB;
     string puzzle = "";
     string answer = "";
     bool running = true;
@@ -158,17 +226,17 @@ int main() {
                 }
         } 
         else if (choice == 3) {
-            cout << "Solving is not added yet." << endl;
+            currentSolve('A', puzzle, answer, solverA, solverB);
         } 
         else if (choice == 4) {
-            cout << "Solving is not added yet." << endl;
+            currentSolve('B', puzzle, answer, solverA, solverB);
         } 
         else if (choice == 5) {
             if (data.empty()) {
                 cout << "No dataset loaded." << endl;
             } 
             else {
-                cout << "Benchmark is not added yet (issue #7)." << endl;
+                cout << "Benchmark is not added yet..." << endl;
             }
         } 
         else if (choice == 6) {
