@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include "Benchmark.h"
 #include "Board.h"
 #include "Dataset.h"
 #include "SolverA.h"
@@ -236,7 +237,14 @@ int main() {
                 cout << "No dataset loaded." << endl;
             } 
             else {
-                cout << "Benchmark is not added yet..." << endl;
+                cout << "How many puzzles (1 to " << data.size() << ")? ";
+                int n = numRead();
+                if (n < 1 || n > (int)data.size()) {
+                    cout << "Please type a number from 1 to " << data.size() << "." << endl;
+                } 
+                else {
+                    bmRun(data, n);
+                }
             }
         } 
         else if (choice == 6) {
