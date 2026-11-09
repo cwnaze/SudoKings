@@ -17,7 +17,7 @@ struct puz {
 
 // counts the given clues in an 81 character puzzle.
 
-int Cluecounts(string start) {
+int clueCounts(string start) {
     int count = 0;
     for (int i = 0; i < (int)start.length(); i++) {
         if (start[i] != '0') {
@@ -54,7 +54,7 @@ vector<puz> loadData(string file, int n) {
             p.answer = line.substr(comma + 1);
 
             if (regex_match(p.start, pattern) && regex_match(p.answer, pattern)) {
-                p.clues = Cluecounts(p.start);
+                p.clues = clueCounts(p.start);
                 puzzles.push_back(p);
             }
         }
