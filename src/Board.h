@@ -11,6 +11,7 @@
 #include <array>
 #include <ostream>
 #include <optional>
+#include <vector>
 
 namespace sudoku {
     constexpr int boardSize = 9;
@@ -36,6 +37,7 @@ namespace sudoku {
         void reset();
         //searching
         std::optional<Position> findFirstEmpty() const;
+        std::vector<int> candidates(int row, int col) const;
         int emptyCount() const;
         //checks
         bool canPlace(int row, int col, int value) const;
@@ -49,8 +51,9 @@ namespace sudoku {
         //helpers
         static int boxIndex(int row, int col);
     private:
-        std::array<int, cellCount> cells;
-        std::array<bool, cellCount> given; //true for cells that were clues in original puzzle
-
+        static bool inBounds(int row, int col);
+        static int indexOf(int row, int col);
+        std::array<int, cellCount> cells{};
+        std::array<bool, cellCount> given{}; //true for cells that were clues in original puzzle
     };
 }
