@@ -25,6 +25,8 @@ add_executable(tests src/Board.h
         src/SolveResult.h
         src/Dataset.h
         src/Dataset.cpp
+        src/Benchmark.h
+        src/Benchmark.cpp
         tests/test_solvera.cpp
         tests/test_solvera.cpp
         tests/test_board.cpp)
@@ -44,4 +46,6 @@ add_executable(SudoKings src/main.cpp
         src/SolveResult.h
         src/Board.cpp
         src/Dataset.h
-        src/Dataset.cpp)
+        src/Dataset.cpp
+        src/Benchmark.h
+        src/Benchmark.cpp)
