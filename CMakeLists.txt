@@ -28,7 +28,7 @@ add_executable(tests src/Board.h
         src/Benchmark.h
         src/Benchmark.cpp
         tests/test_solvera.cpp
-        tests/test_solvera.cpp
+        tests/test_solverb.cpp
         tests/test_board.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
