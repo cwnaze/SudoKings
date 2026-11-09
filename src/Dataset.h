@@ -27,12 +27,12 @@ int Cluecounts(string start) {
     return count;
 }
 
-// reads every puzzle from the kaggle CSV, each line will be "puzzle,solution".
+// reads up to n puzzles, each line will be "puzzle,solution".
 // a valid grid is exactly 81 digits, 0 means a blank cell, lines that are not
 // two valid grids are skipped
 // will return an empty vector if the file cannot be opened, so the caller should check size().
 
-vector<puz> loadData(string file) {
+vector<puz> loadData(string file, int n) {
     vector<puz> puzzles;
     ifstream input(file);
     if (!input.is_open()) {
@@ -42,7 +42,7 @@ vector<puz> loadData(string file) {
     regex pattern("^[0-9]{81}$");
 
     string line;
-    while (getline(input, line)) {
+    while ((int)puzzles.size() < n && getline(input, line)) {
         if (line.length() > 0 && line[line.length() - 1] == '\r') {
             line = line.substr(0, line.length() - 1);
         }
