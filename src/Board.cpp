@@ -35,12 +35,12 @@ namespace sudoku {
             if (ch == '0' || ch == '.') continue;
 
             if  (ch < '1' || ch > '9') {
-                throw std::invalid_argument("Invalid character" + std::to_string(ch) + "at [" + std::to_string(row) + ", " + std::to_string(col) + "]");
+                throw std::invalid_argument("Invalid character '" + std::string(1, ch) + "' at [" + std::to_string(row) + ", " + std::to_string(col) + "]");
             }
 
             const int value = ch - '0';
             if  (!canPlace(row, col, value)) {
-                throw std::invalid_argument(std::string(1,ch) + "at [" + std::to_string(row) + ", " + std::to_string(col) + "] conflicts with another given");
+                throw std::invalid_argument(std::string(1, ch) + " at [" + std::to_string(row) + ", " + std::to_string(col) + "] conflicts with another given");
             }
 
             cells[i] = value;
@@ -88,7 +88,7 @@ namespace sudoku {
 
         for (int i = 0; i < boardSize; ++i) {
             if (cells[indexOf(row, i)] == value) return false;
-            if (cells[indexOf(i, row)] == value) return false;
+            if (cells[indexOf(i, col)] == value) return false;
         }
 
         const int boxRow = (row / boxSize) * boxSize;
@@ -112,7 +112,7 @@ namespace sudoku {
             int boxCol = (i % boxSize) * boxSize;
 
             for (int k = 0; k < boardSize; ++k) {
-                int rowVal = cells[indexOf(boxRow, k)];
+                int rowVal = cells[indexOf(i, k)];
                 int colVal = cells[indexOf(k, i)];
                 int boxVal = cells[indexOf(boxRow + k / boxSize, boxCol + k % boxSize)];
 
