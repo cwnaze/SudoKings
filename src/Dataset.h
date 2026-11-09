@@ -1,26 +1,33 @@
 #pragma once
- 
+
+#include <cstddef>
 #include <string>
 #include <vector>
- 
-using namespace std;
- 
-// one row of the Kaggle file. puzzle: start, its solution answer, and clue count.
 
-struct puz {
-    string start;
-    string answer;
-    int clues;
-};
- 
-// counts the given clues in an 81 character puzzle.
+namespace sudoku {
+    struct puz {
+        std::string start;
+        std::string answer;
+        int clues;
+    };
 
-int clueCounts(string start);
- 
-// reads up to n puzzles from the kaggle CSV, starting at the top of the file.
-// a smaller n gives a smaller sample. each line will be "puzzle,solution".
-// a valid grid is exactly 81 digits, 0 means a blank cell, lines that are not
-// two valid grids are skipped
-// will return an empty vector if the file cannot be opened, so the caller should check size().
-
-vector<puz> loadData(string file, int n);
+    class Dataset {
+    public:
+        Dataset();
+        bool load(const std::string& file, int n);
+        void clear();
+        std::size_t size() const;
+        bool empty() const;
+        const puz& at(std::size_t i) const;
+        const puz& operator[](std::size_t i) const;
+        std::vector<puz>::const_iterator begin() const;
+        std::vector<puz>::const_iterator end() const;
+        static int clueCounts(const std::string& start);
+    private:
+        static constexpr std::size_t gridLength = 81;
+        static bool isGrid(const std::string& s, char lowest);
+        static bool matchesAnswer(const std::string& start, const std::string& answer);
+        static void trim(std::string& s);
+        std::vector<puz> puzzles;
+    };
+}
