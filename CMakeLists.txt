@@ -14,9 +14,11 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(tests tests/test.cpp
         src/Board.h
+        src/Board.cpp
         src/Solver.h
         src/SolveResult.h
-        src/Board.cpp)
+        src/Dataset.h
+        src/Dataset.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
@@ -28,4 +30,6 @@ add_executable(SudoKings src/main.cpp
         src/Board.h
         src/Solver.h
         src/SolveResult.h
-        src/Board.cpp)
+        src/Board.cpp
+        src/Dataset.h
+        src/Dataset.cpp)
