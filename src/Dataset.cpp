@@ -1,21 +1,7 @@
-#pragma once
+#include "Dataset.h"
 
 #include <fstream>
 #include <regex>
-#include <string>
-#include <vector>
-
-using namespace std;
-
-// one row of the Kaggle file. puzzle: start, its solution answer, and clue count.
-
-struct puz {
-    string start;
-    string answer;
-    int clues;
-};
-
-// counts the given clues in an 81 character puzzle.
 
 int clueCounts(string start) {
     int count = 0;
@@ -26,11 +12,6 @@ int clueCounts(string start) {
     }
     return count;
 }
-
-// reads up to n puzzles, each line will be "puzzle,solution".
-// a valid grid is exactly 81 digits, 0 means a blank cell, lines that are not
-// two valid grids are skipped
-// will return an empty vector if the file cannot be opened, so the caller should check size().
 
 vector<puz> loadData(string file, int n) {
     vector<puz> puzzles;
