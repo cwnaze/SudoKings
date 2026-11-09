@@ -27,7 +27,8 @@ add_executable(tests tests/test.cpp
         src/Dataset.h
         src/Dataset.cpp
         tests/test_solvera.cpp
-        tests/test_solvera.cpp)
+        tests/test_solvera.cpp
+        tests/test_board.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
