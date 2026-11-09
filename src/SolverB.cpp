@@ -2,90 +2,98 @@
 
 #include <chrono>
 #include <utility>
-#include <vector>
 
-using sudoku::Board;
-using sudoku::Position;
+namespace sudoku {
+    SolverB::SolverB(const int stepLimit) : stepLimit_(stepLimit) {}
 
-namespace {
-std::string boardToGrid(const Board& board) {
-    std::string grid;
-    grid.reserve(sudoku::cellCount);
-    for (int r = 0; r < sudoku::boardSize; ++r) {
-        for (int c = 0; c < sudoku::boardSize; ++c) {
-            grid += static_cast<char>('0' + board.get(r, c));
-        }
+    std::string SolverB::name() const {
+        return "Solver B (fewest-options-first)";
     }
-    return grid;
-}
-}
 
-std::string SolverB::name() const {
-    return "Fewest-Options-First (MRV)";
-}
+    SolveResult SolverB::solve(Board& board) {
+        steps_ = 0;
+        guesses_ = 0;
+        backtracks_ = 0;
+        hitLimit_ = false;
 
-SolveResult SolverB::solve(Board& board) {
-    steps_ = 0;
-    guesses_ = 0;
-    backtracks_ = 0;
-    hitLimit_ = false;
+        const auto start = std::chrono::steady_clock::now();
 
-    const auto start = std::chrono::steady_clock::now();
-    const bool solved = search(board);
-    const auto end = std::chrono::steady_clock::now();
+        bool solved = false;
+        if (board.isValid()) solved = search(board);
 
-    SolveResult result;
-    result.solved = solved;
-    result.hitStepLimit = hitLimit_;
-    result.grid = boardToGrid(board);
-    result.steps = steps_;
-    result.guesses = guesses_;
-    result.backtracks = backtracks_;
-    result.micros = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    return result;
-}
+        const auto end = std::chrono::steady_clock::now();
 
-bool SolverB::search(Board& board) {
-    bool found = false;
-    Position best{0, 0};
-    std::vector<int> bestCands;
+        if (!solved) board.reset();
 
-    for (int r = 0; r < sudoku::boardSize; ++r) {
-        for (int c = 0; c < sudoku::boardSize; ++c) {
-            if (!board.isEmpty(r, c)) continue;
+        SolveResult result{};
+        result.solved = solved;
+        result.hitStepLimit = hitLimit_;
+        result.grid = toGridString(board);
+        result.steps = steps_;
+        result.guesses = guesses_;
+        result.backtracks = backtracks_;
+        result.micros = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        return result;
+    }
 
-            std::vector<int> cands = board.candidates(r, c);
-            if (!found || cands.size() < bestCands.size()) {
-                found = true;
-                best = Position{r, c};
-                bestCands = std::move(cands);
+    std::optional<CellChoice> SolverB::selectCell(const Board& board) {
+        std::optional<CellChoice> best;
+
+        for (int r = 0; r < boardSize; ++r) {
+            for (int c = 0; c < boardSize; ++c) {
+                if (!board.isEmpty(r, c)) continue;
+
+                std::vector<int> cands = board.candidates(r, c);
+                if (!best || cands.size() < best->candidates.size()) {
+                    best = CellChoice{Position{r, c}, std::move(cands)};
+                    if (best->candidates.empty()) return best;
+                }
             }
-            if (bestCands.size() <= 1) break;
-        }
-        if (found && bestCands.size() <= 1) break;
-    }
-
-    if (!found) return true;          
-    if (bestCands.empty()) return false; 
-
-    const bool isGuess = bestCands.size() >= 2;
-
-    for (int value : bestCands) {
-        if (steps_ >= STEP_LIMIT) {
-            hitLimit_ = true;
-            return false;
         }
 
-        board.place(best.row, best.col, value); 
-        ++steps_;
-        if (isGuess) ++guesses_;
-
-        if (search(board)) return true;
-
-        board.clear(best.row, best.col);
-        if (hitLimit_) return false; 
-        ++backtracks_;
+        return best;
     }
 
-    return false;
+    bool SolverB::search(Board& board) {
+        const auto choice = selectCell(board);
+        if (!choice) return true;                   
+        if (choice->candidates.empty()) return false; 
+
+        const int row = choice->pos.row;
+        const int col = choice->pos.col;
+        const bool isGuess = choice->candidates.size() >= 2;
+
+        for (const int value : choice->candidates) {
+            if (steps_ >= stepLimit_) {
+                hitLimit_ = true;
+                return false;
+            }
+
+            if (!board.place(row, col, value)) continue;
+
+            ++steps_;
+            if (isGuess) ++guesses_;
+
+            if (search(board)) return true;
+
+            if (hitLimit_) return false;
+
+            board.clear(row, col);
+            ++backtracks_;
+        }
+
+        return false;
+    }
+
+    std::string SolverB::toGridString(const Board& board) {
+        std::string grid;
+        grid.reserve(cellCount);
+        for (int r = 0; r < boardSize; ++r) {
+            for (int c = 0; c < boardSize; ++c) {
+                const int v = board.get(r, c);
+                grid += (v == 0) ? '.' : static_cast<char>('0' + v);
+            }
+        }
+        return grid;
+    }
 }
