@@ -15,8 +15,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(tests tests/test.cpp
-        src/Board.h
+add_executable(tests src/Board.h
         src/Board.cpp
         src/Solver.h
         src/SolverA.h
