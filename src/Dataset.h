@@ -7,12 +7,25 @@
 
 using namespace std;
 
-// one row of the Kaggle file. puzzle: start and its solution answer.
+// one row of the Kaggle file. puzzle: start, its solution answer, and clue count.
 
 struct puz {
     string start;
     string answer;
+    int clues;
 };
+
+// counts the given clues in an 81 character puzzle.
+
+int Cluecounts(string start) {
+    int count = 0;
+    for (int i = 0; i < (int)start.length(); i++) {
+        if (start[i] != '0') {
+            count = count + 1;
+        }
+    }
+    return count;
+}
 
 // reads every puzzle from the kaggle CSV, each line will be "puzzle,solution".
 // a valid grid is exactly 81 digits, 0 means a blank cell, lines that are not
@@ -41,6 +54,7 @@ vector<puz> loadData(string file) {
             p.answer = line.substr(comma + 1);
 
             if (regex_match(p.start, pattern) && regex_match(p.answer, pattern)) {
+                p.clues = Cluecounts(p.start);
                 puzzles.push_back(p);
             }
         }
