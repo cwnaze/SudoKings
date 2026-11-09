@@ -15,8 +15,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(tests tests/test.cpp
-        src/Board.h
+add_executable(tests src/Board.h
         src/Board.cpp
         src/Solver.h
         src/SolverA.h
@@ -27,7 +26,8 @@ add_executable(tests tests/test.cpp
         src/Dataset.h
         src/Dataset.cpp
         tests/test_solvera.cpp
-        tests/test_solvera.cpp)
+        tests/test_solvera.cpp
+        tests/test_board.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
